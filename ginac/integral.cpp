@@ -33,6 +33,7 @@
 #include "utils.h"
 #include "operators.h"
 #include "relational.h"
+#include "constant.h"
 
 using namespace std;
 
@@ -466,6 +467,47 @@ ex integral::eval_integ() const
 			ex primit = power(x,f.op(1)+1)/(f.op(1)+1);
 			return primit.subs(x==b)-primit.subs(x==a);
 		}
+	}
+	if (is_a<function>(f)) {
+		function func = ex_to<function>(f);
+		if (func.nops() > 1) return *this;
+				
+		// Check arguments of function and extract constant factors
+		ex arg = func.op(0);
+		ex factor = numeric(1);
+  
+		if (is_a<mul>(arg)) { // Argument of function has several factors
+			for (GiNaC::const_iterator i = arg.begin(); i != arg.end(); ++i) {
+		    		if (is_a<numeric>(*i))
+        				factor = factor *  *i;
+      				else if (is_a<constant>(*i))
+        				factor = factor * *i;
+      				else if (is_a<symbol>(*i)) {
+        				if (ex_to<symbol>(*i) != x)
+          					factor = factor * *i;
+      				} else if (is_a<power>(*i)) {
+        				power p = ex_to<power>(*i);
+        				if (is_a<symbol>(p.op(0)) && (ex_to<symbol>(p.op(0)) != x) && is_a<numeric>(p.op(1)))
+          					factor = factor * *i;
+        				else
+						return *this;
+      				} else
+					return *this;
+    			}
+  		} else if (is_a<symbol>(arg)) { // argument of function is a single symbol
+    			if (ex_to<symbol>(arg) != x)
+				return *this;
+  		}
+  		
+  		ex primit;
+ 		if (func.get_serial() ==  function::find_function("cos", 1))
+	                primit = sin(arg) / factor;
+                else if (func.get_serial() ==  function::find_function("sin",1))
+                        primit = -cos(arg) / factor;
+                else
+                        return *this;
+                
+                return primit.subs(x==b)-primit.subs(x==a);
 	}
 
 	return *this;
