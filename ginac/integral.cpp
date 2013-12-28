@@ -472,33 +472,29 @@ ex integral::eval_integ() const
 		function func = ex_to<function>(f);
 		if (func.nops() > 1) return *this;
 				
-		// Check arguments of function and extract constant factors
-		ex arg = func.op(0);
-		ex factor = numeric(1);
-  
-		if (is_a<mul>(arg)) { // Argument of function has several factors
-			for (GiNaC::const_iterator i = arg.begin(); i != arg.end(); ++i) {
-		    		if (is_a<numeric>(*i))
-        				factor = factor *  *i;
-      				else if (is_a<constant>(*i))
-        				factor = factor * *i;
-      				else if (is_a<symbol>(*i)) {
-        				if (ex_to<symbol>(*i) != x)
-          					factor = factor * *i;
-      				} else if (is_a<power>(*i)) {
-        				power p = ex_to<power>(*i);
-        				if (is_a<symbol>(p.op(0)) && (ex_to<symbol>(p.op(0)) != x) && is_a<numeric>(p.op(1)))
-          					factor = factor * *i;
-        				else
-						return *this;
-      				} else
-					return *this;
-    			}
-  		} else if (is_a<symbol>(arg)) { // argument of function is a single symbol
-    			if (ex_to<symbol>(arg) != x)
-				return *this;
-  		}
-  		
+		// Check if the argument of the function is linear in x
+		ex arg = func.op(0).collect(x);
+		ex w1 = wild(0);
+		ex w2 = wild(1);
+		exmap repls;
+		ex factor;
+		if (arg == x) {
+		        factor = numeric(1);
+		} else if (arg.match(w2 * x, repls)) {
+		        if (repls[w2].has(x))
+		                return *this;
+                        factor = repls[w2];
+                } else if (arg.match(w1 + x, repls)) {
+                        if (repls[w1].has(x))
+                                return *this;
+                        factor = numeric(1);
+		} else if (arg.match(w1 + w2 * x, repls)) {
+		        if (repls[w1].has(x) || repls[w2].has(x))
+		                return *this;
+                        factor = repls[w2];
+                } else
+                        return *this;
+                  		
   		ex primit;
  		if (func.get_serial() ==  function::find_function("cos", 1))
 	                primit = sin(arg) / factor;
