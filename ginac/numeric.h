@@ -90,9 +90,6 @@ public:
 	numeric(unsigned int i);
 	numeric(long i);
 	numeric(unsigned long i);
-#if defined(_M_AMD64)
-	numeric(std::size_t i);
-#endif
 	numeric(long numer, long denom);
 	numeric(double d);
 	numeric(const char *);

@@ -141,14 +141,6 @@ numeric::numeric(unsigned long i)
 	setflag(status_flags::evaluated | status_flags::expanded);
 }
 
-#if defined(_M_AMD64)
-numeric::numeric(std::size_t i)
-{
-	value = cln::cl_I(i);
-	setflag(status_flags::evaluated | status_flags::expanded);
-}
-#endif
-
 
 /** Constructor for rational numerics a/b.
  *
