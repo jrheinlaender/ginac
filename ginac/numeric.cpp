@@ -107,7 +107,7 @@ numeric::numeric(int i)
 }
 
 
-numeric::numeric(unsigned int i)
+numeric::numeric(uint32_t i)
 {
 	// Not the whole uint-range is available if we don't cast to ulong
 	// first.  This is due to the behavior of the cl_I-ctor, which
@@ -135,7 +135,7 @@ numeric::numeric(long i)
 }
 
 
-numeric::numeric(unsigned long i)
+numeric::numeric(uint64_t i)
 {
 	value = cln::cl_I(i);
 	setflag(status_flags::evaluated | status_flags::expanded);
@@ -1012,7 +1012,7 @@ const numeric &numeric::operator=(int i)
 }
 
 
-const numeric &numeric::operator=(unsigned int i)
+const numeric &numeric::operator=(uint32_t i)
 {
 	return operator=(numeric(i));
 }
@@ -1024,7 +1024,7 @@ const numeric &numeric::operator=(long i)
 }
 
 
-const numeric &numeric::operator=(unsigned long i)
+const numeric &numeric::operator=(uint64_t i)
 {
 	return operator=(numeric(i));
 }

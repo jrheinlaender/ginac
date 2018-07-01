@@ -405,7 +405,7 @@ basic & ex::construct_from_int(int i)
 	}
 }
 	
-basic & ex::construct_from_uint(unsigned int i)
+basic & ex::construct_from_uint(uint32_t i)
 {
 	switch (i) {  // prefer flyweights over new objects
 	case 0:
@@ -497,7 +497,7 @@ basic & ex::construct_from_long(long i)
 	}
 }
 	
-basic & ex::construct_from_ulong(unsigned long i)
+basic & ex::construct_from_ulong(uint64_t i)
 {
 	switch (i) {  // prefer flyweights over new objects
 	case 0:
@@ -530,7 +530,7 @@ basic & ex::construct_from_ulong(unsigned long i)
 		return dynallocate<numeric>(i);
 	}
 }
-	
+
 basic & ex::construct_from_double(double d)
 {
 	return dynallocate<numeric>(d);

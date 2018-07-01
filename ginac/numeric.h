@@ -30,6 +30,7 @@
 #include <cln/complex.h>
 #include <stdexcept>
 #include <vector>
+#include <cstdint>
 
 namespace GiNaC {
 
@@ -87,9 +88,9 @@ class numeric : public basic
 	// other constructors
 public:
 	numeric(int i);
-	numeric(unsigned int i);
+	numeric(uint32_t i);
 	numeric(long i);
-	numeric(unsigned long i);
+	numeric(uint64_t i);
 	numeric(long numer, long denom);
 	numeric(double d);
 	numeric(const char *);
@@ -142,9 +143,9 @@ public:
 	const numeric & div_dyn(const numeric &other) const;
 	const numeric & power_dyn(const numeric &other) const;
 	const numeric & operator=(int i);
-	const numeric & operator=(unsigned int i);
+	const numeric & operator=(uint32_t i);
 	const numeric & operator=(long i);
-	const numeric & operator=(unsigned long i);
+	const numeric & operator=(uint64_t i);
 	const numeric & operator=(double d);
 	const numeric & operator=(const char *s);
 	const numeric inverse() const;
